@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import DashboardLayout from '../components/DashboardLayout';
+import DashboardLayout from '../components/TempLayout.jsx';
 import LocationPicker from '../components/LocationPicker';
 import { useAuth } from '../context/AuthContext';
 import { Pengaduan } from '../models/Pengaduan';
