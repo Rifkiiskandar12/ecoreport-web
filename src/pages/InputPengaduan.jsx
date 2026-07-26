@@ -11,7 +11,7 @@ export default function InputPengaduan() {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  const [kategoriList, setKategoriList] = useState([]); // Array kategori
+  const [kategoriList, setKategoriList] = useState([]); 
   const [form, setForm] = useState({ judul: '', deskripsi: '', lokasi: '', kategoriId: '' });
   const [foto, setFoto] = useState(null);
   const [isAnonim, setIsAnonim] = useState(false);
@@ -22,7 +22,6 @@ export default function InputPengaduan() {
   const [serverError, setServerError] = useState('');
   const [success, setSuccess] = useState(false);
 
-  // useEffect: ambil daftar kategori saat komponen mount
   useEffect(() => {
     async function loadKategori() {
       try {
