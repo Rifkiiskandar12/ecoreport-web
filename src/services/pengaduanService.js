@@ -54,6 +54,11 @@ export const pengaduanService = {
     return Pengaduan.fromDb(data);
   },
 
+  async update(id, payload) {
+    const { error } = await supabase.from('pengaduan').update(payload).eq('id', id);
+    if (error) throw new Error(error.message);
+  },
+
   async delete(id) {
     const { error } = await supabase.from('pengaduan').delete().eq('id', id);
     if (error) throw new Error(error.message);

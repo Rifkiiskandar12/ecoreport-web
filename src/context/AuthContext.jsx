@@ -52,17 +52,12 @@ export function AuthProvider({ children }) {
   }
 
   async function register(email, password, namaLengkap) {
-    const { data, error } = await supabase.auth.signUp({ email, password });
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { nama_lengkap: namaLengkap } },
+    });
     if (error) throw error;
-
-    if (data.user) {
-      const { error: profileError } = await supabase.from('profiles').insert({
-        id: data.user.id,
-        nama_lengkap: namaLengkap,
-        role: 'warga',
-      });
-      if (profileError) throw profileError;
-    }
     return data;
   }
 
@@ -83,7 +78,15 @@ export function AuthProvider({ children }) {
     if (error) throw error;
   }
 
-  const value = { user, profile, loading, login, register, logout, resetPassword, updatePassword };
+  async function loginWithGoogle() {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: `${window.location.origin}/dashboard` },
+    });
+    if (error) throw error;
+  }
+
+  const value = { user, profile, loading, login, register, logout, resetPassword, updatePassword, loginWithGoogle };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

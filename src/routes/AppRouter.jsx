@@ -9,10 +9,11 @@ import KelolaUser from '../pages/KelolaUser';
 import KelolaKategori from '../pages/KelolaKategori';
 import Dashboard from '../pages/Dashboard';
 import InputPengaduan from '../pages/InputPengaduan';
+import EditPengaduan from '../pages/EditPengaduan';
 import TrackingStatus from '../pages/TrackingStatus';
 import DetailPengaduan from '../pages/DetailPengaduan';
 
-// Middleware sederhana: cek user login sebelum akses halaman terproteksi
+// Middleware: hanya untuk aksi yang WAJIB login (buat/edit pengaduan, kelola data)
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
 
@@ -46,14 +47,12 @@ export default function AppRouter() {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
 
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
+          {/* Bisa diakses tanpa login (guest / public view) */}
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/pengaduan/tracking" element={<TrackingStatus />} />
+          <Route path="/pengaduan/:id" element={<DetailPengaduan />} />
+
+          {/* Wajib login: aksi yang mengubah data */}
           <Route
             path="/pengaduan/baru"
             element={
@@ -63,18 +62,10 @@ export default function AppRouter() {
             }
           />
           <Route
-            path="/pengaduan/tracking"
+            path="/pengaduan/edit/:id"
             element={
               <ProtectedRoute>
-                <TrackingStatus />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/pengaduan/:id"
-            element={
-              <ProtectedRoute>
-                <DetailPengaduan />
+                <EditPengaduan />
               </ProtectedRoute>
             }
           />

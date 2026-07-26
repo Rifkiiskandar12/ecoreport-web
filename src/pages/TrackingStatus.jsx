@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import DashboardLayout from '../components/DashboardLayout';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { useAuth } from '../context/AuthContext';
@@ -60,6 +60,22 @@ export default function TrackingStatus() {
     const cocokStatus = filterStatus === 'semua' || p.status === filterStatus;
     return cocokSearch && cocokStatus;
   });
+
+  if (!user) {
+    return (
+      <DashboardLayout>
+        <div className="max-w-md mx-auto text-center py-16">
+          <h2 className="text-lg font-bold text-gray-800 mb-2">Login Diperlukan</h2>
+          <p className="text-sm text-gray-500 mb-4">
+            Silakan login untuk melihat riwayat pengaduan yang pernah kamu buat.
+          </p>
+          <Link to="/login" className="inline-flex min-h-[44px] px-5 items-center bg-primary hover:bg-primary/90 text-white text-sm font-medium rounded-lg">
+            Masuk
+          </Link>
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout>
@@ -129,13 +145,21 @@ export default function TrackingStatus() {
                     </td>
                     <td className="px-4 py-3">
                       {p.status === 'menunggu' && (
-                        <button
-                          onClick={(e) => handleDelete(p.id, e)}
-                          disabled={deletingId === p.id}
-                          className="text-xs text-danger hover:underline disabled:opacity-50"
-                        >
-                          {deletingId === p.id ? 'Menghapus...' : 'Hapus'}
-                        </button>
+                        <div className="flex gap-3">
+                          <button
+                            onClick={(e) => { e.stopPropagation(); navigate(`/pengaduan/edit/${p.id}`); }}
+                            className="text-xs text-secondary hover:underline"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={(e) => handleDelete(p.id, e)}
+                            disabled={deletingId === p.id}
+                            className="text-xs text-danger hover:underline disabled:opacity-50"
+                          >
+                            {deletingId === p.id ? 'Menghapus...' : 'Hapus'}
+                          </button>
+                        </div>
                       )}
                     </td>
                   </tr>
@@ -157,13 +181,21 @@ export default function TrackingStatus() {
                   <div className="flex items-center justify-between mt-1">
                     <p className="text-xs text-gray-400">{formatTanggal(p.createdAt)}</p>
                     {p.status === 'menunggu' && (
-                      <button
-                        onClick={(e) => handleDelete(p.id, e)}
-                        disabled={deletingId === p.id}
-                        className="text-xs text-danger hover:underline disabled:opacity-50"
-                      >
-                        {deletingId === p.id ? 'Menghapus...' : 'Hapus'}
-                      </button>
+                      <div className="flex gap-3">
+                        <button
+                          onClick={(e) => { e.stopPropagation(); navigate(`/pengaduan/edit/${p.id}`); }}
+                          className="text-xs text-secondary hover:underline"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={(e) => handleDelete(p.id, e)}
+                          disabled={deletingId === p.id}
+                          className="text-xs text-danger hover:underline disabled:opacity-50"
+                        >
+                          {deletingId === p.id ? 'Menghapus...' : 'Hapus'}
+                        </button>
+                      </div>
                     )}
                   </div>
                 </div>
