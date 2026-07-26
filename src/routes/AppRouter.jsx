@@ -47,10 +47,31 @@ export default function AppRouter() {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
 
-          {/* Bisa diakses tanpa login (guest / public view) */}
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/pengaduan/tracking" element={<TrackingStatus />} />
-          <Route path="/pengaduan/:id" element={<DetailPengaduan />} />
+          {/* Wajib login untuk semua halaman utama */}
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/pengaduan/tracking"
+            element={
+              <ProtectedRoute>
+                <TrackingStatus />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/pengaduan/:id"
+            element={
+              <ProtectedRoute>
+                <DetailPengaduan />
+              </ProtectedRoute>
+            }
+          />
 
           {/* Wajib login: aksi yang mengubah data */}
           <Route
