@@ -6,6 +6,7 @@ import ForgotPassword from '../pages/ForgotPassword';
 import ResetPassword from '../pages/ResetPassword';
 import NotFound from '../pages/NotFound';
 import KelolaUser from '../pages/KelolaUser';
+import KelolaKategori from '../pages/KelolaKategori';
 import Dashboard from '../pages/Dashboard';
 import InputPengaduan from '../pages/InputPengaduan';
 import TrackingStatus from '../pages/TrackingStatus';
@@ -83,6 +84,14 @@ export default function AppRouter() {
               <AdminRoute>
                 <KelolaUser />
               </AdminRoute>
+            }
+          />
+          <Route
+            path="/kelola-kategori"
+            element={
+              <ProtectedRoute>
+                <KelolaKategori />
+              </ProtectedRoute>
             }
           />
 

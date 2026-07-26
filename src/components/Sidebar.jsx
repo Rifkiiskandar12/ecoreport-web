@@ -4,8 +4,9 @@ import { useAuth } from '../context/AuthContext';
 const menuItems = [
   { path: '/dashboard', label: 'Dashboard', icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6' },
   { path: '/pengaduan/baru', label: 'Buat Pengaduan', icon: 'M12 4v16m8-8H4' },
-  { path: '/pengaduan/tracking', label: 'Tracking Status', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2' },
+  { path: '/pengaduan/tracking', label: 'Tracking Status', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2', wargaOnly: true },
   { path: '/kelola-user', label: 'Kelola User', icon: 'M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m6-4a4 4 0 10-4-4 4 4 0 004 4zm6 0a4 4 0 10-4-4', adminOnly: true },
+  { path: '/kelola-kategori', label: 'Kelola Kategori', icon: 'M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z', petugasOnly: true },
 ];
 
 export default function Sidebar({ open, onClose }) {
@@ -34,7 +35,9 @@ export default function Sidebar({ open, onClose }) {
           {menuItems.map((item) => {
             // Sembunyikan menu "Buat Pengaduan" untuk petugas/admin
             if (item.path === '/pengaduan/baru' && profile?.role !== 'warga') return null;
+            if (item.wargaOnly && profile?.role !== 'warga') return null;
             if (item.adminOnly && profile?.role !== 'admin') return null;
+            if (item.petugasOnly && profile?.role === 'warga') return null;
 
             return (
               <NavLink

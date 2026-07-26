@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
 
 @theme {
   --color-primary: #22C55E;
@@ -11,4 +12,11 @@
   --color-info: #3B82F6;
 
   --radius-bubble: 20px;
+}
+
+/* Pastikan Leaflet map selalu punya tinggi & tidak ketiban Tailwind preflight */
+.leaflet-container {
+  height: 100%;
+  width: 100%;
+  z-index: 0;
 }

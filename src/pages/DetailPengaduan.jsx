@@ -1,10 +1,29 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import DashboardLayout from '../components/DashboardLayout';
-import { MapContainer, TileLayer, Marker } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
+import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet';
+import L from 'leaflet';
 import { pengaduanService } from '../services/pengaduanService';
 import { Pengaduan } from '../models/Pengaduan';
+
+const markerIcon = new L.Icon({
+  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41],
+});
+
+// Pastikan peta menghitung ulang ukurannya setelah container selesai render
+function FixMapSize() {
+  const map = useMap();
+  useEffect(() => {
+    setTimeout(() => map.invalidateSize(), 100);
+  }, [map]);
+  return null;
+}
 
 export default function DetailPengaduan() {
   const { id } = useParams();
@@ -107,11 +126,12 @@ export default function DetailPengaduan() {
                   <p className="text-gray-400 text-xs mb-1">Lokasi di Peta</p>
                   <div className="rounded-bubble overflow-hidden border border-gray-200 h-56">
                     <MapContainer center={[p.latitude, p.longitude]} zoom={15} className="w-full h-full" dragging={false} scrollWheelZoom={false}>
+                      <FixMapSize />
                       <TileLayer
                         attribution='&copy; OpenStreetMap contributors'
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                       />
-                      <Marker position={[p.latitude, p.longitude]} />
+                      <Marker position={[p.latitude, p.longitude]} icon={markerIcon} />
                     </MapContainer>
                   </div>
                 </div>

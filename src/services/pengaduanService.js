@@ -54,6 +54,11 @@ export const pengaduanService = {
     return Pengaduan.fromDb(data);
   },
 
+  async delete(id) {
+    const { error } = await supabase.from('pengaduan').delete().eq('id', id);
+    if (error) throw new Error(error.message);
+  },
+
   async uploadFoto(file, userId) {
     const fileExt = file.name.split('.').pop();
     const fileName = `${userId}-${Date.now()}.${fileExt}`;

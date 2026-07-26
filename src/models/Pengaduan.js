@@ -1,7 +1,7 @@
 // JavaScript OOP: Class model untuk entitas Pengaduan
 
 export class Pengaduan {
-  constructor({ id, userId, kategoriId, judul, deskripsi, lokasi, fotoUrl, status, createdAt, isAnonim, kategori }) {
+  constructor({ id, userId, kategoriId, judul, deskripsi, lokasi, fotoUrl, status, createdAt, isAnonim, kategori, latitude, longitude }) {
     this.id = id;
     this.userId = userId;
     this.kategoriId = kategoriId;
@@ -13,6 +13,8 @@ export class Pengaduan {
     this.createdAt = createdAt;
     this.isAnonim = isAnonim || false;
     this.kategori = kategori;
+    this.latitude = latitude;
+    this.longitude = longitude;
   }
 
   // Method: nama pelapor yang ditampilkan (disamarkan jika anonim)
@@ -56,6 +58,8 @@ export class Pengaduan {
       createdAt: row.created_at,
       isAnonim: row.is_anonim,
       kategori: row.kategori, // ikut terbawa jika query pakai join select('*, kategori(nama)')
+      latitude: row.latitude,
+      longitude: row.longitude,
     });
   }
 
@@ -69,6 +73,8 @@ export class Pengaduan {
       lokasi: this.lokasi,
       foto_url: this.fotoUrl,
       is_anonim: this.isAnonim,
+      latitude: this.latitude,
+      longitude: this.longitude,
     };
   }
 }

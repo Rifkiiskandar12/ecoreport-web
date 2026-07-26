@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../components/DashboardLayout';
+import LoadingSpinner from '../components/LoadingSpinner';
 import { useAuth } from '../context/AuthContext';
 import { pengaduanService } from '../services/pengaduanService';
 import { Pengaduan } from '../models/Pengaduan';
@@ -109,7 +110,7 @@ export default function Dashboard() {
         </div>
 
         {loading ? (
-          <div className="p-8 text-center text-sm text-gray-400">Memuat data...</div>
+          <div className="p-8 text-center text-sm text-gray-400"><LoadingSpinner label="Memuat laporan..." /></div>
         ) : filteredData.length === 0 ? (
           <div className="p-8 text-center text-sm text-gray-400">
             {rawData.length === 0 ? 'Belum ada laporan' : 'Tidak ada hasil yang cocok'}

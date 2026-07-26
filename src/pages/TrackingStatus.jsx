@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../components/DashboardLayout';
+import LoadingSpinner from '../components/LoadingSpinner';
 import { useAuth } from '../context/AuthContext';
 import { pengaduanService } from '../services/pengaduanService';
 
@@ -10,24 +11,40 @@ export default function TrackingStatus() {
   const [pengaduanList, setPengaduanList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [deletingId, setDeletingId] = useState(null);
   const [search, setSearch] = useState('');
   const [filterStatus, setFilterStatus] = useState('semua');
 
   useEffect(() => {
-    async function loadData() {
-      setLoading(true);
-      setError('');
-      try {
-        const data = await pengaduanService.getByUser(user.id);
-        setPengaduanList(data);
-      } catch (err) {
-        setError('Gagal memuat data: ' + err.message);
-      } finally {
-        setLoading(false);
-      }
-    }
     if (user) loadData();
   }, [user]);
+
+  async function loadData() {
+    setLoading(true);
+    setError('');
+    try {
+      const data = await pengaduanService.getByUser(user.id);
+      setPengaduanList(data);
+    } catch (err) {
+      setError('Gagal memuat data: ' + err.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleDelete(id, e) {
+    e.stopPropagation();
+    if (!confirm('Hapus pengaduan ini? Tindakan tidak bisa dibatalkan.')) return;
+    setDeletingId(id);
+    try {
+      await pengaduanService.delete(id);
+      setPengaduanList((prev) => prev.filter((p) => p.id !== id));
+    } catch (err) {
+      setError('Gagal menghapus: ' + err.message);
+    } finally {
+      setDeletingId(null);
+    }
+  }
 
   function formatTanggal(dateStr) {
     return new Date(dateStr).toLocaleDateString('id-ID', {
@@ -79,7 +96,7 @@ export default function TrackingStatus() {
 
       <div className="bg-white rounded-bubble shadow-sm border border-gray-100 overflow-hidden">
         {loading ? (
-          <div className="p-8 text-center text-sm text-gray-400">Memuat data...</div>
+          <LoadingSpinner label="Memuat data pengaduan..." />
         ) : filteredList.length === 0 ? (
           <div className="p-8 text-center text-sm text-gray-400">
             {pengaduanList.length === 0 ? 'Belum ada pengaduan' : 'Tidak ada hasil yang cocok'}
@@ -95,6 +112,7 @@ export default function TrackingStatus() {
                   <th className="px-4 py-3 font-medium">Lokasi</th>
                   <th className="px-4 py-3 font-medium">Tanggal</th>
                   <th className="px-4 py-3 font-medium">Status</th>
+                  <th className="px-4 py-3 font-medium">Aksi</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
@@ -108,6 +126,17 @@ export default function TrackingStatus() {
                       <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${p.getStatusColor()}`}>
                         {p.getStatusLabel()}
                       </span>
+                    </td>
+                    <td className="px-4 py-3">
+                      {p.status === 'menunggu' && (
+                        <button
+                          onClick={(e) => handleDelete(p.id, e)}
+                          disabled={deletingId === p.id}
+                          className="text-xs text-danger hover:underline disabled:opacity-50"
+                        >
+                          {deletingId === p.id ? 'Menghapus...' : 'Hapus'}
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -125,7 +154,18 @@ export default function TrackingStatus() {
                     </span>
                   </div>
                   <p className="text-xs text-gray-500">{p.kategori?.nama || '-'} • {p.lokasi}</p>
-                  <p className="text-xs text-gray-400 mt-1">{formatTanggal(p.createdAt)}</p>
+                  <div className="flex items-center justify-between mt-1">
+                    <p className="text-xs text-gray-400">{formatTanggal(p.createdAt)}</p>
+                    {p.status === 'menunggu' && (
+                      <button
+                        onClick={(e) => handleDelete(p.id, e)}
+                        disabled={deletingId === p.id}
+                        className="text-xs text-danger hover:underline disabled:opacity-50"
+                      >
+                        {deletingId === p.id ? 'Menghapus...' : 'Hapus'}
+                      </button>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
